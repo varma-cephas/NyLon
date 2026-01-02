@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import PickFile from './PickFile'
 import UploadedFilesList from './UploadedFilesList'
 import Button from './Button'
@@ -9,30 +9,32 @@ export default function DragDrop() {
   const [files, setFiles] = useState<Array<File> | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const { mutate, isPending, isError } = useFileMetaDataUpload()
-  const handleFileDrop = (event: DragEvent) => {
-    event.preventDefault()
-    const droppedFiles = Array.from(event.dataTransfer.files)
-    // console.info(droppedFiles)
-    if (droppedFiles.length) {
-      setIsDragging(false)
-      setFiles(prevDroppedFiles => {
-        if (!prevDroppedFiles) {
+  const handleFileDrop = useCallback(
+    (event: DragEvent) => {
+      event.preventDefault()
+      const droppedFiles = Array.from(event.dataTransfer.files)
+      // console.info(droppedFiles)
+      if (droppedFiles.length) {
+        setIsDragging(false)
+        if (!files?.length) {
           mutate(droppedFiles)
-          return droppedFiles
+          return setFiles(droppedFiles)
         }
         const uniqueNewFiles = droppedFiles.filter(
           newFile =>
-            !prevDroppedFiles.some(
+            !files.some(
               prevFile =>
                 prevFile.name === newFile.name && prevFile.size === newFile.size
             )
         )
-        const updatedFiles = [...prevDroppedFiles, ...uniqueNewFiles]
-        mutate(updatedFiles)
-        return updatedFiles
-      })
-    }
-  }
+        const updatedFiles = [...files, ...uniqueNewFiles]
+
+        setFiles(updatedFiles)
+        mutate(uniqueNewFiles)
+      }
+    },
+    [files, mutate]
+  )
 
   const hanldeDragOver = (event: DragEvent) => {
     event.preventDefault()
