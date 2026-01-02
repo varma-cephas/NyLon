@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { FileUploadDto } from '@repo/api';
+import { ReceiveFileMetadataDto } from '@repo/api';
 
 @Injectable()
 export class FileUploadService {
-  receiveFilesMetaData(files: FileUploadDto) {
+  receiveFilesMetaData(files: ReceiveFileMetadataDto) {
     return files;
   }
 }
