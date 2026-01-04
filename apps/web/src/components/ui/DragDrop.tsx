@@ -3,37 +3,44 @@ import PickFile from './PickFile'
 import UploadedFilesList from './UploadedFilesList'
 import Button from './Button'
 import type { DragEvent } from 'react'
+import type { FilesType } from '@/types/Files'
 import { useFileMetaDataUpload } from '@/hooks/useFileMetaDataUpload'
 
 export default function DragDrop() {
-  const [files, setFiles] = useState<Array<File> | null>(null)
+  const [files, setFiles] = useState<Array<FilesType> | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const { mutate, isPending, isError } = useFileMetaDataUpload()
+
   const handleFileDrop = useCallback(
     (event: DragEvent) => {
       event.preventDefault()
-      const droppedFiles = Array.from(event.dataTransfer.files)
+      const droppedFiles = Array.from(event.dataTransfer.files).map(file => ({
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+        fileRawInfo: file,
+        presignedUrl: '',
+      }))
       // console.info(droppedFiles)
       if (droppedFiles.length) {
         setIsDragging(false)
         if (!files?.length) {
-          mutate(droppedFiles)
           return setFiles(droppedFiles)
         }
         const uniqueNewFiles = droppedFiles.filter(
           newFile =>
             !files.some(
               prevFile =>
-                prevFile.name === newFile.name && prevFile.size === newFile.size
+                prevFile.fileName === newFile.fileName &&
+                prevFile.fileSize === newFile.fileSize
             )
         )
         const updatedFiles = [...files, ...uniqueNewFiles]
 
         setFiles(updatedFiles)
-        mutate(uniqueNewFiles)
       }
     },
-    [files, mutate]
+    [files]
   )
 
   const hanldeDragOver = (event: DragEvent) => {
@@ -43,9 +50,29 @@ export default function DragDrop() {
   const handleDragLeave = () => setIsDragging(false)
 
   function handleUploadFiles() {
-    if (files) {
-      return 'files uploaded'
+    if (files !== null && files.length >= 1) {
+      return mutate(files, {
+        onSuccess: data => {
+          setFiles(prevFile => {
+            if (prevFile !== null) {
+              return prevFile.map(file => {
+                const presignedUrl =
+                  data.files.find(
+                    signedFile => file.fileName === signedFile.fileName
+                  )?.presignedUrl || ''
+                return {
+                  ...file,
+                  presignedUrl,
+                }
+              })
+            }
+            return null
+          })
+        },
+      })
     }
+    // console.info('please upload a file')
+    return 'No files uploaded yet'
   }
   return (
     <div

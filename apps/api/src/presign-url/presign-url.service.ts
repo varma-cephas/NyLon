@@ -2,7 +2,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ReceiveFileMetadataDto } from '@repo/api';
+import { ReceiveFileMetadataDto, ReceiveFileMetadataWithPresignUrlDto } from '@repo/api';
 import {v4 as uuidv4} from "uuid"
 
 @Injectable()
@@ -30,7 +30,7 @@ export class PresignUrlService {
         return await getSignedUrl(this.s3Client, command, {expiresIn: 30})
     }
 
-    async generateFilesPresignedUrl(filesMetaData: ReceiveFileMetadataDto){
+    async generateFilesPresignedUrl(filesMetaData: ReceiveFileMetadataDto): Promise<ReceiveFileMetadataWithPresignUrlDto>{
         const filesWithPresignUrl = await Promise.all(
             filesMetaData.files.map( async file=> {
             const filePresignedUrl = await this.presignUrl(file.fileName, file.fileType, file.fileSize);

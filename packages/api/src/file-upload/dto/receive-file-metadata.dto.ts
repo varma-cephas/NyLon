@@ -14,9 +14,21 @@ export class FileMetaDataDTO {
   fileSize: number;
 }
 
+export class FileMetaDataWithPresignUrlDTO extends FileMetaDataDTO {
+  @IsString()
+  presignedUrl: string
+}
+
 export class ReceiveFileMetadataDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FileMetaDataDTO)
   files: FileMetaDataDTO[];
+}
+
+export class ReceiveFileMetadataWithPresignUrlDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FileMetaDataWithPresignUrlDTO)
+  files: FileMetaDataWithPresignUrlDTO[];
 }
