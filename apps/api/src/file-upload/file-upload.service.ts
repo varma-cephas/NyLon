@@ -5,8 +5,7 @@ import { PresignUrlService } from 'src/presign-url/presign-url.service';
 @Injectable()
 export class FileUploadService {
   constructor( private presignUrlService: PresignUrlService ) {}
-  receiveFilesMetaData(filesMetaData: ReceiveFileMetadataDto) {
-    console.info(this.presignUrlService.generateFilesPresignedUrl(filesMetaData))
-    return filesMetaData;
+  async addPresignUrlToFilesMetadata(filesMetaData: ReceiveFileMetadataDto) {
+    return await this.presignUrlService.generateFilesPresignedUrl(filesMetaData)
   }
 }

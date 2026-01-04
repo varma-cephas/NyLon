@@ -6,7 +6,9 @@ import { FileUploadService } from './file-upload.service';
 export class FileUploadController {
   constructor(public fileUploadService: FileUploadService) {}
   @Post('metadata')
-  receiveFilesMetaData(@Body() filesMetaData: ReceiveFileMetadataDto) {
-    return this.fileUploadService.receiveFilesMetaData(filesMetaData);
+  async receiveFilesMetaData(@Body() filesMetaData: ReceiveFileMetadataDto) {
+    const filesWithPresignUrl = await this.fileUploadService.addPresignUrlToFilesMetadata(filesMetaData)
+    console.info(filesWithPresignUrl)
+    return filesWithPresignUrl
   }
 }

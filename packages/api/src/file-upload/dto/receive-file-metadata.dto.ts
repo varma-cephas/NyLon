@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsArray, ValidateNested, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class FileMetaDataDTO {
@@ -9,6 +9,8 @@ export class FileMetaDataDTO {
   fileType: string;
 
   @IsNumber()
+  @Min(1)
+  @Max(200 * 1024 * 1024) //limits the file size uploaded
   fileSize: number;
 }
 
