@@ -11,37 +11,34 @@ export default function DragDrop() {
   const [isDragging, setIsDragging] = useState(false)
   const { mutate, isPending, isError } = useFileMetaDataUpload()
 
-  const handleFileDrop = useCallback(
-    (event: DragEvent) => {
-      event.preventDefault()
-      const droppedFiles = Array.from(event.dataTransfer.files).map(file => ({
-        fileName: file.name,
-        fileType: file.type,
-        fileSize: file.size,
-        fileRawInfo: file,
-        presignedUrl: '',
-      }))
-      // console.info(droppedFiles)
-      if (droppedFiles.length) {
-        setIsDragging(false)
-        if (!files?.length) {
-          return setFiles(droppedFiles)
-        }
-        const uniqueNewFiles = droppedFiles.filter(
-          newFile =>
-            !files.some(
-              prevFile =>
-                prevFile.fileName === newFile.fileName &&
-                prevFile.fileSize === newFile.fileSize
-            )
-        )
-        const updatedFiles = [...files, ...uniqueNewFiles]
-
-        setFiles(updatedFiles)
+  const handleFileDrop = (event: DragEvent) => {
+    event.preventDefault()
+    const droppedFiles = Array.from(event.dataTransfer.files).map(file => ({
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      fileRawInfo: file,
+      presignedUrl: '',
+    }))
+    // console.info(droppedFiles)
+    if (droppedFiles.length) {
+      setIsDragging(false)
+      if (!files?.length) {
+        return setFiles(droppedFiles)
       }
-    },
-    [files]
-  )
+      const uniqueNewFiles = droppedFiles.filter(
+        newFile =>
+          !files.some(
+            prevFile =>
+              prevFile.fileName === newFile.fileName &&
+              prevFile.fileSize === newFile.fileSize
+          )
+      )
+      const updatedFiles = [...files, ...uniqueNewFiles]
+
+      setFiles(updatedFiles)
+    }
+  }
 
   const hanldeDragOver = (event: DragEvent) => {
     event.preventDefault()
