@@ -4,9 +4,9 @@ import plimit from 'p-limit'
 import type { FilesType } from '@/types/Files'
 import { useState } from 'react'
 
+const limit = plimit(3)
 export function useFilesUpload() {
   const [uploads, setUploads] = useState<{[key: string]: { progress: number, status: string }}>({})
-  const limit = plimit(3)
   const mutation = useMutation({
     mutationFn: async (files:  Array<FilesType>) => {
       const uploadTasks = files.map((fileData) => {
@@ -23,13 +23,22 @@ export function useFilesUpload() {
                 'Content-Type': fileData.fileType,
               },
               onUploadProgress: (progressEvent) => {
-                if (progressEvent.total) {
-                  const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                  
-                  setUploads((prev) => ({
-                    ...prev,
-                    [fileData.fileId]: { ...prev[fileData.fileId], progress: percent },
-                  }));
+                  const total = progressEvent.total || fileData.fileSize;
+                  if (total) {
+                  const percent = Math.round((progressEvent.loaded * 100) / total);
+
+                  setUploads((prev) => {
+                    if (prev[fileData.fileId]?.progress === percent) return prev;
+                    return {
+                      ...prev,
+                      [fileData.fileId]: { 
+                          ...prev[fileData.fileId], 
+                          progress: percent, 
+                          status: 'uploading' 
+                      },
+                    };
+                  });
+
                 }
               },
             });
