@@ -1,12 +1,14 @@
 import { X } from 'lucide-react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FilesType } from '@/types/Files'
+import { useFilesUpload } from '@/hooks/useFileUpload'
 
 interface FileList {
   files: Array<FilesType> | null
   setFiles: Dispatch<SetStateAction<Array<FilesType> | null>>
 }
 export default function UploadedFilesList({ files, setFiles }: FileList) {
+  const { uploads, isPending } =  useFilesUpload()
   function handleRemoveFile(fileIndex: number) {
     setFiles(prevFiles => {
       if (!prevFiles) return []
@@ -20,14 +22,16 @@ export default function UploadedFilesList({ files, setFiles }: FileList) {
         <ul>
           {files.map((file, index: number) => (
             <li
-              key={index}
-              className="border flex justify-between w-80 p-2 rounded-md mb-2"
+              key={file.fileId}
+              className={`border ${uploads[file.fileId].status ? 'border-green' : 'border'} flex justify-between w-80 p-2 rounded-md mb-2`}
             >
               <div>
                 <span className="block">{file.fileName}</span>
                 <span className="block">
                   {(file.fileSize / (1024 * 1024)).toFixed(2)} MB
                 </span>
+                <span className='block'>Progress: {uploads[file.fileId].progress || 0}%</span>
+                <span className='block'>Status: {uploads[file.fileId].status}</span>
               </div>
               <X
                 className="cursor-pointer"
