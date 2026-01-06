@@ -5,8 +5,9 @@ import type { FilesType } from '@/types/Files'
 interface FileList {
   files: Array<FilesType> | null
   setFiles: Dispatch<SetStateAction<Array<FilesType> | null>>
+  uploads: {[key: string]: { progress: number, status: string }}
 }
-export default function UploadedFilesList({ files, setFiles }: FileList) {
+export default function UploadedFilesList({ files, setFiles, uploads }: FileList) {
   function handleRemoveFile(fileIndex: number) {
     setFiles(prevFiles => {
       if (!prevFiles) return []
@@ -20,14 +21,15 @@ export default function UploadedFilesList({ files, setFiles }: FileList) {
         <ul>
           {files.map((file, index: number) => (
             <li
-              key={index}
-              className="border flex justify-between w-80 p-2 rounded-md mb-2"
+              key={file.fileId}
+              className={`border ${uploads[file.fileId]?.status === 'success' ? 'border-green-400' : 'border'} flex justify-between w-80 p-2 rounded-md mb-2`}
             >
               <div>
                 <span className="block">{file.fileName}</span>
                 <span className="block">
                   {(file.fileSize / (1024 * 1024)).toFixed(2)} MB
                 </span>
+                <span className='block'>Progress: {uploads[file.fileId]?.progress || 0}%</span>
               </div>
               <X
                 className="cursor-pointer"

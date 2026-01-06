@@ -16,6 +16,7 @@ export class FileMetaDataDTO {
 
 export class FileMetaDataWithPresignUrlDTO extends FileMetaDataDTO {
   @IsString()
+  fileId: string
   presignedUrl: string
 }
 
