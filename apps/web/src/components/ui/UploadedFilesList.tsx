@@ -1,14 +1,13 @@
 import { X } from 'lucide-react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FilesType } from '@/types/Files'
-import { useFilesUpload } from '@/hooks/useFileUpload'
 
 interface FileList {
   files: Array<FilesType> | null
   setFiles: Dispatch<SetStateAction<Array<FilesType> | null>>
+  uploads: {[key: string]: { progress: number, status: string }}
 }
-export default function UploadedFilesList({ files, setFiles }: FileList) {
-  const { uploads } =  useFilesUpload()
+export default function UploadedFilesList({ files, setFiles, uploads }: FileList) {
   function handleRemoveFile(fileIndex: number) {
     setFiles(prevFiles => {
       if (!prevFiles) return []

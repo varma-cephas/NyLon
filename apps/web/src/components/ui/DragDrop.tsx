@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PickFile from './PickFile'
 import UploadedFilesList from './UploadedFilesList'
 import Button from './Button'
@@ -11,7 +11,7 @@ export default function DragDrop() {
   const [files, setFiles] = useState<Array<FilesType> | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const { mutateAsync, isPending, isError } = useFileMetaDataUpload()
-  const { mutateAsync: uploadFiles } = useFilesUpload()
+  const { mutateAsync: uploadFiles, uploads } = useFilesUpload()
 
   const handleFileDrop = (event: DragEvent) => {
     event.preventDefault()
@@ -47,9 +47,10 @@ export default function DragDrop() {
     event.preventDefault()
   }
 
-  // useEffect(() => {
-  //   console.info(files)
-  // }, [files])
+  useEffect(() => {
+    console.info(uploads)
+  }, [uploads])
+  
   const handleDragEnter = () => setIsDragging(true)
   const handleDragLeave = () => setIsDragging(false)
 
@@ -105,7 +106,7 @@ export default function DragDrop() {
         </p>
       </div>
       <div className="space-y-2 mx-auto">
-        <UploadedFilesList files={files} setFiles={setFiles} />
+        <UploadedFilesList files={files} setFiles={setFiles} uploads={uploads} />
       </div>
       {isError && <p className="text-red-500 text-center">Upload failed</p>}
     </div>
