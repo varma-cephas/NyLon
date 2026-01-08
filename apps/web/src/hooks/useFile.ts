@@ -68,12 +68,13 @@ export function useFile(){
     }
   }
 
-  const hanldeDragOver = (event: DragEvent) => {
-    event.preventDefault()
-  }
+
   const handleDragEnter = () => setIsDragging(true)
   const handleDragLeave = () => setIsDragging(false)
 
+  const hanldeDragOver = (event: DragEvent) => {
+    event.preventDefault()
+  }
   function handleRemoveFile(fileIndex: number) {
     setFiles(prevFiles => {
       if (!prevFiles) return []
@@ -81,5 +82,5 @@ export function useFile(){
       return updatedFiles
     })
   }
-return { files, handleFileDrop, isDragging, handleDragEnter, handleFileSelect, hanldeDragOver, handleRemoveFile, handleDragLeave, setFiles}
+return { files, handleFileDrop,hanldeDragOver, isDragging, handleDragEnter, handleFileSelect, handleRemoveFile, handleDragLeave, setFiles}
 }

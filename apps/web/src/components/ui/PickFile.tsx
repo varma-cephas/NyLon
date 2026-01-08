@@ -4,7 +4,7 @@ export default function PickFile({handleFileSelect}: {handleFileSelect: (event: 
   return (
     <>
       <label className='border p-2 rounded-lg cursor-pointer' htmlFor='browseFile'>
-          <UploadCloudIcon />
+        <UploadCloudIcon />
       </label>
       <div className='pt-2'>
         <input
