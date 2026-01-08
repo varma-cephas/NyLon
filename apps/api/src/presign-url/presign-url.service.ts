@@ -18,25 +18,33 @@ export class PresignUrlService {
                 secretAccessKey: this.configService.getOrThrow('SECRET_ACCESS_KEY')
             }
         })
+        this.bucketName = this.configService.getOrThrow('BUCKET_NAME')
     }
     private async presignUrl(fileName: string, fileType:string, fileSize: number){
+        const fileId = uuidv4()
         const uniqueFileKey = `${uuidv4()}-${fileName}`
         const command = new PutObjectCommand({
-            Bucket: this.configService.getOrThrow('BUCKET_NAME'),
+            Bucket: this.bucketName,
             Key: uniqueFileKey,
             ContentType: fileType,
             ContentLength: fileSize
         })
-        return await getSignedUrl(this.s3Client, command, {expiresIn: 30})
+        const url = await getSignedUrl(this.s3Client, command, {expiresIn: 30})
+        return {
+            url: url,
+            fileId: fileId,
+            key: uniqueFileKey
+        }
     }
 
     async generateFilesPresignedUrl(filesMetaData: ReceiveFileMetadataDto): Promise<ReceiveFileMetadataWithPresignUrlDto>{
         const filesWithPresignUrl = await Promise.all(
             filesMetaData.files.map( async file=> {
-            const filePresignedUrl = await this.presignUrl(file.fileName, file.fileType, file.fileSize);
+            const generatedFileData = await this.presignUrl(file.fileName, file.fileType, file.fileSize)
             return {
                 ...file,
-                presignedUrl: filePresignedUrl
+                fileId: generatedFileData.fileId,
+                presignedUrl: generatedFileData.url
             }
         })
         )
