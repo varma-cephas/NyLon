@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DriveRouteImport } from './routes/drive'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DriveIndexRouteImport } from './routes/drive/index'
 import { Route as DriveUploadIndexRouteImport } from './routes/drive/upload/index'
-import { Route as DriveManageIndexRouteImport } from './routes/drive/manage/index'
 
 const DriveRoute = DriveRouteImport.update({
   id: '/drive',
@@ -24,42 +24,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DriveIndexRoute = DriveIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DriveRoute,
+} as any)
 const DriveUploadIndexRoute = DriveUploadIndexRouteImport.update({
   id: '/upload/',
   path: '/upload/',
-  getParentRoute: () => DriveRoute,
-} as any)
-const DriveManageIndexRoute = DriveManageIndexRouteImport.update({
-  id: '/manage/',
-  path: '/manage/',
   getParentRoute: () => DriveRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/drive': typeof DriveRouteWithChildren
-  '/drive/manage': typeof DriveManageIndexRoute
+  '/drive/': typeof DriveIndexRoute
   '/drive/upload': typeof DriveUploadIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/drive': typeof DriveRouteWithChildren
-  '/drive/manage': typeof DriveManageIndexRoute
+  '/drive': typeof DriveIndexRoute
   '/drive/upload': typeof DriveUploadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/drive': typeof DriveRouteWithChildren
-  '/drive/manage/': typeof DriveManageIndexRoute
+  '/drive/': typeof DriveIndexRoute
   '/drive/upload/': typeof DriveUploadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/drive' | '/drive/manage' | '/drive/upload'
+  fullPaths: '/' | '/drive' | '/drive/' | '/drive/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/drive' | '/drive/manage' | '/drive/upload'
-  id: '__root__' | '/' | '/drive' | '/drive/manage/' | '/drive/upload/'
+  to: '/' | '/drive' | '/drive/upload'
+  id: '__root__' | '/' | '/drive' | '/drive/' | '/drive/upload/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +82,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/drive/': {
+      id: '/drive/'
+      path: '/'
+      fullPath: '/drive/'
+      preLoaderRoute: typeof DriveIndexRouteImport
+      parentRoute: typeof DriveRoute
+    }
     '/drive/upload/': {
       id: '/drive/upload/'
       path: '/upload'
@@ -90,23 +96,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DriveUploadIndexRouteImport
       parentRoute: typeof DriveRoute
     }
-    '/drive/manage/': {
-      id: '/drive/manage/'
-      path: '/manage'
-      fullPath: '/drive/manage'
-      preLoaderRoute: typeof DriveManageIndexRouteImport
-      parentRoute: typeof DriveRoute
-    }
   }
 }
 
 interface DriveRouteChildren {
-  DriveManageIndexRoute: typeof DriveManageIndexRoute
+  DriveIndexRoute: typeof DriveIndexRoute
   DriveUploadIndexRoute: typeof DriveUploadIndexRoute
 }
 
 const DriveRouteChildren: DriveRouteChildren = {
-  DriveManageIndexRoute: DriveManageIndexRoute,
+  DriveIndexRoute: DriveIndexRoute,
   DriveUploadIndexRoute: DriveUploadIndexRoute,
 }
 
