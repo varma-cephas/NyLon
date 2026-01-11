@@ -18,7 +18,7 @@ export function useFileMetaDataUpload() {
         })),
       }
       const { data }: { data: ReceiveFileMetadataWithPresignUrlDto } =
-        await api.post('/file-upload/metadata', filesMetaData)
+        await api.post('/files/metadata', filesMetaData)
       return data
     },
   })
