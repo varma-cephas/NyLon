@@ -10,7 +10,7 @@ export class FileMetaDataDTO {
 
   @IsNumber()
   @Min(1)
-  @Max(200 * 1024 * 1024) //limits the file size uploaded
+  @Max(500 * 1024 * 1024) //limits the file size uploaded
   fileSize: number;
 }
 

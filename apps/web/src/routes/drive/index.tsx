@@ -13,8 +13,8 @@ function RouteComponent() {
       {
         files?.length?
           <ul>
-            {files.map(file => (
-              <li>{file.fileName}</li>
+            {files.map((file, index: number) => (
+              <li key={index}>{file.fileName}</li>
             ))}
           </ul>
           :
