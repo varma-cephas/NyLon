@@ -18,7 +18,7 @@ export function useFilesUpload() {
           }));
 
           try {
-            await axios.put(fileData.presignedUrl, fileData.fileRawInfo, {
+            await axios.put('/local', fileData.fileRawInfo, {
               headers: { 
                 'Content-Type': fileData.fileType,
               },
@@ -46,8 +46,7 @@ export function useFilesUpload() {
               ...prev,
               [fileData.fileId]: { progress: 100, status: 'success' },
             }));
-
-            console.info(fileData)
+            
             return { status: 'success', fileId: fileData.fileId };
           } catch (err) {
             setUploads((prev) => ({

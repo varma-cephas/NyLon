@@ -27,7 +27,6 @@ function RouteComponent() {
             const newServerDataMap = new Map(
               data.files.map(file => [file.fileName, {id: file.fileId, url: file.presignedUrl}])
             )
-            console.info(newServerDataMap)
             const filesWithPresignUrl:   Array<FilesType> = files.map(file => {
               const newServerInfo = newServerDataMap.get(file.fileName)
               return {
