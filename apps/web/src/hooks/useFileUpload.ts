@@ -18,7 +18,7 @@ export function useFilesUpload() {
           }));
 
           try {
-            await axios.put(fileData.presignedUrl, fileData.fileRawInfo, {
+            await axios.put('/local', fileData.fileRawInfo, {
               headers: { 
                 'Content-Type': fileData.fileType,
               },
@@ -28,7 +28,7 @@ export function useFilesUpload() {
                   const percent = Math.round((progressEvent.loaded * 100) / total);
 
                   setUploads((prev) => {
-                    if (prev[fileData.fileId]?.progress === percent) return prev;
+                    if (prev[fileData.fileId]?.progress === percent && prev[fileData.fileId]?.status === 'uploading') return prev;
                     return {
                       ...prev,
                       [fileData.fileId]: { 
@@ -46,7 +46,7 @@ export function useFilesUpload() {
               ...prev,
               [fileData.fileId]: { progress: 100, status: 'success' },
             }));
-
+            
             return { status: 'success', fileId: fileData.fileId };
           } catch (err) {
             setUploads((prev) => ({
@@ -57,7 +57,6 @@ export function useFilesUpload() {
           }
         });
       });
-
       return Promise.all(uploadTasks);
     },
   });
