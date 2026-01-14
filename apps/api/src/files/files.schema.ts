@@ -1,12 +1,11 @@
-import { bigint, date, text, varchar } from "drizzle-orm/pg-core";
+import { bigint, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable , uuid} from "drizzle-orm/pg-core";
 
 export const file = pgTable('files', {
-    id: uuid('id').primaryKey(),
-    name: text('name').notNull(),
-    userId: uuid('userId').notNull(),
-    storageKey: varchar('storage-key', {length: 412}).notNull().unique(),
-    size: bigint('size', {mode: 'number'}).notNull(),
-    type: text('type').notNull(),
-    createdAt: date('date').notNull(),
+    fileId: uuid('id').primaryKey(),
+    fileName: text('name').notNull(),
+    storageKey: varchar('storage_key', {length: 412}).notNull().unique(),
+    fileSize: bigint('size', {mode: 'number'}).notNull(),
+    fileType: text('type').notNull(),
+    createdAt: timestamp('create_at', {withTimezone: true}).defaultNow().$defaultFn(()=> new Date()).notNull()
 })
