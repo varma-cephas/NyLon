@@ -7,9 +7,9 @@ import { useFiles } from '@/context/Files'
 
 export function useFilesUpload() {
   const {setUploads, uploads, confirmUpload} = useFiles()
+  const successUploads = useRef<string []>([])
   const limit = plimit(3)
   const batchSize = 10
-  const successUploads = useRef<string []>([])
   const mutation = useMutation({
     mutationFn: async (files:  Array<FilesType>) => {
       const uploadTasks = files.map((fileData) => {
@@ -56,7 +56,7 @@ export function useFilesUpload() {
               successUploads.current = []
               try{
                 const result = await confirmUpload.mutateAsync(confirmFiles)
-                console.info('confirmed uploads',result)
+                console.info(result)
               }catch(error){
                 console.error('File confirmation failed', error)
               }
@@ -74,6 +74,14 @@ export function useFilesUpload() {
       });
       return Promise.all(uploadTasks);
     },
+    onSettled: async () => {
+      if(successUploads.current.length > 0){
+        const remainingUploadedFiles = [...successUploads.current]
+        successUploads.current = []
+        const result = await confirmUpload.mutateAsync(remainingUploadedFiles)
+        console.info(result)
+      }
+    }
   });
 
   return { ...mutation, uploads };

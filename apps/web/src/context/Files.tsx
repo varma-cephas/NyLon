@@ -93,10 +93,11 @@ export function FilesProvider({ children }: Children) {
   const confirmUpload =  useMutation({
       mutationFn: (id: string []) => api.post('/files/confirm-upload', {id}),
       onSuccess: (response) =>{
-        const data: string [] = response.data
+        const confirmedFilesIds: string [] = response.data
+
         setUploads( prev => {
           const newState = { ...prev }
-          data.forEach( id => {
+          confirmedFilesIds.forEach( id => {
             if(newState[id]){
               newState[id].status = "saved"
             }

@@ -11,7 +11,7 @@ export class FilesController {
       return filesWithPresignUrl;
     }
     @Post('confirm-upload')
-    async receiveUploadConfirmation(@Body() fileIds: string []){
+    async receiveUploadConfirmation(@Body() fileIds:{ id: string []}){
       return this.filesService.confirmUpload(fileIds)
     }
 }

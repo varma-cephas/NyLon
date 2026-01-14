@@ -11,8 +11,13 @@ export class FilesService {
       data.files.forEach(file => this.cacheService.put(file.fileId, file, {expirationTtl: null}))
       return data
     }
-    async confirmUpload(fileIds: string []){
-      return fileIds
+    async confirmUpload(fileIds:{ id: string []}){
+      for(const id of fileIds.id){
+       const successfulUploadedFile = await this.cacheService.get(id)
+       console.info('transact uploads to db',successfulUploadedFile)
+      }
+      // console.info(fileIds)
+      return fileIds.id
     }
 }
 
