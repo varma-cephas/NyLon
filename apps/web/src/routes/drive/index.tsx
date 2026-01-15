@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useDrive } from '@/hooks/useDrive'
 import type { FileMetaDataDBInsert } from '@repo/api'
+import useDeleteFile from '@/hooks/useDeleteFile'
 
 export const Route = createFileRoute('/drive/')({
   component: RouteComponent,
@@ -8,6 +9,7 @@ export const Route = createFileRoute('/drive/')({
 
 function RouteComponent() {
   const { data: files } = useDrive()
+  const { mutate: deleteFile } = useDeleteFile()
 
   return(
     <>
@@ -21,7 +23,7 @@ function RouteComponent() {
                   <p className="text-xs text-gray-400">{(file.fileSize / 1024).toFixed(1)} KB</p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1 text-sm text-red-600 border border-red-200 rounded">Delete</button>
+                  <button className="px-3 py-1 text-sm text-red-600 border border-red-200 rounded" onClick={()=> deleteFile(file.fileId)}>Delete</button>
                 </div>
               </div>
             ))}

@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get } from '@nestjs/common';
+import { Controller, Body, Post, Get, Delete, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ReceiveFileMetadataDto, ReceiveFileMetadataWithPresignUrlDto } from '@repo/api';
 import { FilesService } from './files.service';
 
@@ -17,5 +17,9 @@ export class FilesController {
     @Post('confirm-upload')
     async receiveUploadConfirmation(@Body() fileIds:{ id: string []}){
       return this.filesService.confirmUpload(fileIds)
+    }
+    @Delete(':id')
+    async deleteFile(@Param('id', ParseUUIDPipe) fileId: string){
+      return this.filesService.deleteFile(fileId)
     }
 }
