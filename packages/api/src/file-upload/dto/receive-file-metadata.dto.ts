@@ -18,7 +18,11 @@ export class FileMetaDataWithPresignUrlDTO extends FileMetaDataDTO {
   @IsString()
   fileId: string
   presignedUrl: string
-  uploadStatus?: string
+}
+
+export class FileMetaDataDBInsert extends FileMetaDataDTO {
+  fileId: string
+  storageKey: string
 }
 
 export class ReceiveFileMetadataDto {

@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { FileMetaDataWithPresignUrlDTO } from '@repo/api';
+import { FileMetaDataDBInsert } from '@repo/api';
 import { IKVStore } from './interface/kv-store.interface';
 
 @Injectable()
 export class CacheService implements IKVStore {
-    private store = new Map<string, {value: FileMetaDataWithPresignUrlDTO, expires: number | null}>()
+    private store = new Map<string, {value: FileMetaDataDBInsert, expires: number | null}>()
     
-    async put(key:string, value: FileMetaDataWithPresignUrlDTO, options: {expirationTtl: number}){
+    async put(key:string, value: FileMetaDataDBInsert, options: {expirationTtl: number}){
         const expires = options.expirationTtl ? Date.now() + options.expirationTtl * 1000 : null
         this.store.set(key, {value, expires})
-        console.info(this.store)
     }
 
     async get(key: string){
